@@ -1,0 +1,33 @@
+{
+	"name": "kdyby/elastic-search",
+	"type": "library",
+	"description": "Integration of Elastica for ElasticSearch into Nette Framework",
+	"keywords": ["nette", "kdyby", "elasticsearch", "search", "elastic", "es"],
+	"homepage": "http://kdyby.org",
+	"license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+	"authors": [
+		{
+			"name": "Filip Procházka",
+			"homepage": "http://filip-prochazka.com",
+			"email": "filip@prochazka.su"
+		}
+	],
+	"support": {
+		"email": "filip@prochazka.su",
+		"issues": "https://github.com/Kdyby/ElasticSearch/issues"
+	},
+	"require": {
+		"nette/nette": "~2.1@dev",
+
+		"ruflin/elastica": "~1.3.0"
+	},
+	"require-dev": {
+		"nette/tester": "@dev",
+		"jakub-onderka/php-parallel-lint": "~0.7"
+	},
+	"autoload": {
+		"psr-0": {
+			"Kdyby\\ElasticSearch\\": "src/"
+		}
+	}
+}
