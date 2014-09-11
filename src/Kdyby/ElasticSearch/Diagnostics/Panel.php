@@ -10,6 +10,8 @@
 
 namespace Kdyby\ElasticSearch\Diagnostics;
 
+use Elastica\Exception\ExceptionInterface;
+use Elastica;
 use Kdyby;
 use Nette;
 use Nette\Utils\Html;
@@ -42,7 +44,15 @@ if (!class_exists('Tracy\Dumper')) {
 class Panel extends Nette\Object implements IBarPanel
 {
 
+	/**
+	 * @var float
+	 */
 	public $totalTime = 0;
+
+	/**
+	 * @var int
+	 */
+	public $queriesCount = 0;
 
 	/**
 	 * @var array
@@ -63,9 +73,9 @@ class Panel extends Nette\Object implements IBarPanel
 		$tab = Html::el('span')->title('ElasticSearch')->add($img);
 		$title = Html::el()->setText('ElasticSearch');
 
-		if ($this->queries) {
+		if ($this->queriesCount) {
 			$title->setText(
-				count($this->queries) . ' call' . (count($this->queries) > 1 ? 's' : '') .
+				$this->queriesCount . ' call' . ($this->queriesCount > 1 ? 's' : '') .
 				' / ' . sprintf('%0.2f', $this->totalTime * 1000) . ' ms'
 			);
 		}
@@ -100,20 +110,38 @@ class Panel extends Nette\Object implements IBarPanel
 
 
 
-	public function success($client, $request, $response, $time)
+	public function success($client, Elastica\Request $request, Elastica\Response $response, $time)
 	{
-		$this->queries[] = [$request, $response, $time];
+		$this->queries[$this->requestAuthority($response)][] = [$request, $response, $time];
 		$this->totalTime += $time;
+		$this->queriesCount++;
 	}
 
 
 
-	public function failure($client, $request, $e, $time)
+	public function failure($client, Elastica\Request $request, $e, $time)
 	{
+		/** @var Elastica\Response $response */
 		$response = method_exists($e, 'getResponse') ? $e->getResponse() : NULL;
 
-		$this->queries[] = [$request, $response, $time, $e];
+		$this->queries[$this->requestAuthority($response)][] = [$request, $response, $time, $e];
 		$this->totalTime += $time;
+		$this->queriesCount++;
+	}
+
+
+
+	protected function requestAuthority(Elastica\Response $response = NULL)
+	{
+		if ($response) {
+			$info = $response->getTransferInfo();
+			$url = new Nette\Http\Url($info['url']);
+
+		} else {
+			$url = new Nette\Http\Url(key($this->queries) ?: 'http://localhost:9200/');
+		}
+
+		return $url->hostUrl;
 	}
 
 
