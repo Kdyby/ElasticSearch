@@ -49,10 +49,8 @@ class SearchExtension extends Nette\DI\CompilerExtension
 	 * @var array
 	 */
 	public $elasticaDefaults = array(
-		'metadataCache' => 'default',
 		'connections' => array(),
 		'roundRobin' => FALSE,
-		'log' => '%debugMode%',
 		'retryOnConflict' => 0,
 	);
 
@@ -70,7 +68,7 @@ class SearchExtension extends Nette\DI\CompilerExtension
 		'config' => array(
 			'curl' => array(), # curl options
 			'headers' => array(), # additional curl headers
-			'url' => '', # completely custom URL endpoint
+			'url' => NULL, # completely custom URL endpoint
 		)
 	);
 
@@ -90,16 +88,10 @@ class SearchExtension extends Nette\DI\CompilerExtension
 			}
 		}
 
-		$builder->addDefinition($this->prefix('config'))
-			->setClass('Doctrine\Search\Configuration')
-			->addSetup('setMetadataCacheImpl', array(CacheHelpers::processCache($this, $config['metadataCache'], 'metadata', $config['debugger'])))
-			->addSetup('setEntitySerializer', array(new Nette\DI\Statement('Doctrine\Search\Serializer\CallbackSerializer')));
-
+		$elasticaConfig = array_intersect_key($config, $this->elasticaDefaults);
+		// $elasticaConfig['log'] = $config['debugger']; // todo: panel
 		$builder->addDefinition($this->prefix('elastica'))
-			->setClass('Elastica\Client', array(array_intersect_key($config, $this->elasticaDefaults)));
-
-		$builder->addDefinition($this->prefix('manager'))
-			->setClass('Doctrine\Search\SearchManager', array($this->prefix('@config'), $this->prefix('@elastica')));
+			->setClass('Elastica\Client', array($elasticaConfig));
 	}
 
 
