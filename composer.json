@@ -18,10 +18,22 @@
 	},
 	"require": {
 		"nette/nette": "~2.1@dev",
-
-		"ruflin/elastica": "~1.3.0"
+		"doctrine/orm": "~2.4",
+		"kdyby/doctrine-cache": "*",
+		"doctrine/search" : "@dev",
+		"ruflin/elastica": "~1.3.0",
+		"monolog/monolog": "~1.9"
+	},
+	"suggest": {
+		"kdyby/console": "Great library for integrating the Symfony Console into Nette Framework",
+		"kdyby/doctrine": "Great library for integrating the Doctrine ORM into Nette Framework",
+		"kdyby/monolog": "Great library for integrating the Monolog into Nette Framework"
 	},
 	"require-dev": {
+		"kdyby/console": "*",
+		"kdyby/doctrine": "*",
+		"kdyby/monolog": "*",
+
 		"nette/tester": "@dev",
 		"jakub-onderka/php-parallel-lint": "~0.7"
 	},
@@ -29,5 +41,8 @@
 		"psr-0": {
 			"Kdyby\\ElasticSearch\\": "src/"
 		}
-	}
+	},
+	"repositories": [
+		{ "type": "vcs", "url": "https://github.com/fprochazka/doctrine-search.git" }
+	]
 }
