@@ -1,0 +1,25 @@
+<style>
+    #nette-debug .nette-elasticSearchPanel,
+    #tracy-debug .nette-elasticSearchPanel { min-width: 700px; }
+    #nette-debug .nette-elasticSearchPanel h2,
+    #tracy-debug .nette-elasticSearchPanel h2 { font-size: 22px; font-weight: bold; }
+    #nette-debug .nette-elasticSearchPanel small,
+    #tracy-debug .nette-elasticSearchPanel small { font-size: 70%; font-weight: normal; }
+    #nette-debug .nette-elasticSearchPanel table,
+    #tracy-debug .nette-elasticSearchPanel table { width: 100%; }
+    #nette-debug .nette-elasticSearchPanel table th,
+    #tracy-debug .nette-elasticSearchPanel table th { width: 80px; }
+</style>
+
+<h1>Queries: <?php echo $esc(count($this->queries)); ?>, time: <?php echo $esc($totalTime); ?> </h1>
+<div class="nette-inner tracy-inner nette-elasticSearchPanel">
+	<?php foreach($this->queries as $query): ?>
+		<?php list($request, $response, $time) = $query; $info = $response ? $response->getTransferInfo() : array('url' => NULL); ?>
+		<h2><?php echo $esc(strtoupper($request->getMethod())); ?> <?php echo $esc($info['url']); ?> <small><?php echo $esc(number_format($time * 1000, 2)); ?>ms</small></h2>
+		<?php if ($response && $response->isOk()) { ?>
+			<?php echo $click($response->getData(), TRUE); ?>
+		<?php } elseif (isset($query[3]) && $query[3] instanceof \Exception) { ?>
+			<p style="color:red"><?php echo $esc($query[3]->getMessage()); ?></p>
+		<?php } ?>
+	<?php endforeach; ?>
+</div>
