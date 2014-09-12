@@ -97,8 +97,8 @@ class Panel extends Nette\Object implements IBarPanel
 		ob_start();
 		$esc = callback('Nette\Templating\Helpers::escapeHtml');
 		$click = class_exists('\Tracy\Dumper')
-			? function ($o, $c = FALSE) {
-				return \Tracy\Dumper::toHtml($o, array('collapse' => $c));
+			? function ($o, $c = FALSE, $d = 4) {
+				return \Tracy\Dumper::toHtml($o, array('collapse' => $c, 'depth' => $d));
 			}
 			: callback('\Tracy\Helpers::clickableDump');
 		$totalTime = $this->totalTime ? sprintf('%0.3f', $this->totalTime * 1000) . ' ms' : 'none';
