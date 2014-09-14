@@ -40,8 +40,6 @@ class SearchExtension extends Nette\DI\CompilerExtension
 	 * @var array
 	 */
 	public $defaults = array(
-		'analyzers' => array(),
-		'filters' => array(),
 		'debugger' => '%debugMode%',
 	);
 
@@ -89,7 +87,6 @@ class SearchExtension extends Nette\DI\CompilerExtension
 		}
 
 		$elasticaConfig = array_intersect_key($config, $this->elasticaDefaults);
-		// $elasticaConfig['log'] = $config['debugger']; // todo: panel
 		$elastica = $builder->addDefinition($this->prefix('elastica'))
 			->setClass('Kdyby\ElasticSearch\Client', array($elasticaConfig));
 
