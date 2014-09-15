@@ -31,7 +31,7 @@
 			<tr>
 				<th width="70">Response:</th>
 				<?php if ($response && $response->isOk()) { ?>
-					<td><?php echo $click($response->getData(), TRUE); ?></td>
+					<td><?php echo $click($response->getData(), TRUE, 10); ?></td>
 				<?php } elseif (isset($query[3]) && $query[3] instanceof \Exception) { ?>
 					<td style="color:red"><?php echo $esc($query[3]->getMessage()); ?></td>
 				<?php } ?>
