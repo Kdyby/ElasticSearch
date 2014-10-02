@@ -25,8 +25,8 @@
 
 		<table>
 			<?php if ($request->getData()) { ?><tr>
-				<th width="70"><a href="json:<?php echo $esc(\Nette\Utils\Json::encode($request->getData())) ?>">Request:</th>
-				<td><?php echo $click($request->getData(), TRUE, 10); ?></td>
+				<th width="70"><a href="json:<?php echo $esc(\Nette\Utils\Json::encode($extractRequestData($request))) ?>">Request:</th>
+				<td><?php echo $click($extractRequestData($request), TRUE, 10); ?></td>
 			</tr><?php } ?>
 			<tr>
 				<th width="70">Response:</th>

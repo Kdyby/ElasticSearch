@@ -15,6 +15,7 @@ use Elastica;
 use Kdyby;
 use Nette;
 use Nette\Utils\Html;
+use Nette\Utils\Json;
 use Tracy\Bar;
 use Tracy\BlueScreen;
 use Tracy\Debugger;
@@ -25,7 +26,6 @@ use Tracy\IBarPanel;
 if (!class_exists('Tracy\Debugger')) {
 	class_alias('Nette\Diagnostics\Debugger', 'Tracy\Debugger');
 }
-
 
 if (!class_exists('Tracy\Bar')) {
 	class_alias('Nette\Diagnostics\Bar', 'Tracy\Bar');
@@ -102,6 +102,17 @@ class Panel extends Nette\Object implements IBarPanel
 			}
 			: callback('\Tracy\Helpers::clickableDump');
 		$totalTime = $this->totalTime ? sprintf('%0.3f', $this->totalTime * 1000) . ' ms' : 'none';
+		$extractRequestData = function (Elastica\Request $request) {
+			$data = $request->getData();
+
+			try {
+				return !is_array($data) ? Json::decode($data, Json::FORCE_ARRAY) : $data;
+
+			} catch (Nette\Utils\JsonException $e) {
+				return $data;
+			}
+		};
+
 
 		require __DIR__ . '/panel.phtml';
 
