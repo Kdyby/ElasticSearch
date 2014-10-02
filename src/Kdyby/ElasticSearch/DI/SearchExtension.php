@@ -100,6 +100,16 @@ class SearchExtension extends Nette\DI\CompilerExtension
 
 
 
+	public function afterCompile(Nette\PhpGenerator\ClassType $class)
+	{
+		$initialize = $class->methods['initialize'];
+
+		$debuggerClass = class_exists('Tracy\Debugger') ? 'Tracy\Debugger' : 'Nette\Diagnostics\Debugger';
+		$initialize->addBody('?::getBlueScreen()->addPanel(?);', array(new Code\PhpLiteral($debuggerClass), 'Kdyby\\ElasticSearch\\Diagnostics\\Panel::renderException'));
+	}
+
+
+
 	public static function register(Nette\Configurator $configurator)
 	{
 		$configurator->onCompile[] = function ($config, Nette\DI\Compiler $compiler) {

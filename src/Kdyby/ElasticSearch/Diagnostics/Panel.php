@@ -19,6 +19,7 @@ use Nette\Utils\Json;
 use Tracy\Bar;
 use Tracy\BlueScreen;
 use Tracy\Debugger;
+use Tracy\Dumper;
 use Tracy\IBarPanel;
 
 
@@ -157,6 +158,41 @@ class Panel extends Nette\Object implements IBarPanel
 
 
 
+	public static function renderException(\Exception $e = NULL)
+	{
+		if (!$e instanceof ExceptionInterface) {
+			return NULL;
+		}
+
+		$panel = NULL;
+
+		if ($e instanceof Elastica\Exception\ResponseException) {
+			$panel .= '<h3>Request</h3>';
+			$panel .= Dumper::toHtml($e->getRequest());
+
+			$panel .= '<h3>Response</h3>';
+			$panel .= Dumper::toHtml($e->getResponse());
+
+		} elseif ($e instanceof Elastica\Exception\Bulk\ResponseException) {
+			$panel .= '<h3>Failures</h3>';
+			$panel .= Dumper::toHtml($e->getFailures());
+
+
+		} /*elseif ($e->getQuery() !== NULL) {
+			$panel .= '<h3>Query</h3>'
+				. '<pre class="nette-dump"><span class="php-string">'
+				. $e->getQuery()->getQuery()
+				. '</span></pre>';
+		} */
+
+		return $panel ? array(
+			'tab' => 'ElasticSearch',
+			'panel' => $panel
+		) : NULL;
+	}
+
+
+
 	/**
 	 * @param Kdyby\ElasticSearch\Client $client
 	 */
@@ -166,7 +202,6 @@ class Panel extends Nette\Object implements IBarPanel
 		$client->onError[] = $this->failure;
 
 		self::getDebuggerBar()->addPanel($this);
-		// self::getDebuggerBlueScreen()->addPanel(array($this, 'renderException'));
 	}
 
 
@@ -177,16 +212,6 @@ class Panel extends Nette\Object implements IBarPanel
 	private static function getDebuggerBar()
 	{
 		return method_exists('Tracy\Debugger', 'getBar') ? Debugger::getBar() : Debugger::$bar;
-	}
-
-
-
-	/**
-	 * @return BlueScreen
-	 */
-	private static function getDebuggerBlueScreen()
-	{
-		return method_exists('Tracy\Debugger', 'getBlueScreen') ? Debugger::getBlueScreen() : Debugger::$blueScreen;
 	}
 
 }
