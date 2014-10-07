@@ -13,7 +13,7 @@
     #tracy-debug .nette-elasticSearchPanel table th { text-align: right; }
 </style>
 
-<?php foreach ($this->queries as $host => $queries): ?>
+<?php foreach ($processedQueries as $host => $queries): ?>
 <h1 class="nette-elasticSearchPanel"><code><?php echo $esc($host) ?></code> - Queries: <?php echo $esc(count($queries)); ?>, time: <?php echo $esc($totalTime); ?> </h1>
 <div class="nette-inner tracy-inner nette-elasticSearchPanel">
 	<?php foreach($queries as $query): ?>
@@ -24,18 +24,49 @@
 		</h2>
 
 		<table>
-			<?php if ($request->getData()) { ?><tr>
-				<th width="70"><a href="json:<?php echo $esc(\Nette\Utils\Json::encode($extractRequestData($request))) ?>">Request:</th>
-				<td><?php echo $click($extractRequestData($request), TRUE, 10); ?></td>
+			<?php if ($request->getData()) { $requestData = $extractData($request); ?><tr>
+				<th width="70"><a href="json:<?php echo $esc(\Nette\Utils\Json::encode($requestData)) ?>">Request:</th>
+				<td><?php echo $click($requestData, TRUE, 15); ?></td>
 			</tr><?php } ?>
-			<tr>
-				<th width="70">Response:</th>
-				<?php if ($response && $response->isOk()) { ?>
-					<td><?php echo $click($response->getData(), TRUE, 10); ?></td>
-				<?php } elseif (isset($query[3]) && $query[3] instanceof \Exception) { ?>
-					<td style="color:red"><?php echo $esc($query[3]->getMessage()); ?></td>
+
+			<?php if ($response && $response->isOk()) { $responseData = $extractData($response); ?>
+				<?php if (stripos($request->getPath(), '_search') !== FALSE) { ?>
+					<?php if (isset($responseData['took'])) { ?><tr>
+						<th width="70">Took:</th><td><?php echo $click($responseData['took']); ?></td>
+					</tr><?php } ?>
+
+					<?php if (isset($responseData['timed_out']) && $responseData['timed_out']) { ?><tr>
+						<th width="70">Timed&nbsp;out:</th><td>yes</td>
+					</tr><?php } ?>
+
+					<?php if (isset($responseData['_shards'])) { ?><tr>
+						<th width="70">Shards:</th><td>
+							total: <?php echo $esc($responseData['_shards']['total']); ?>,
+							successful: <?php echo $esc($responseData['_shards']['successful']); ?>,
+							failed: <?php echo $esc($responseData['_shards']['failed']); ?>
+						</td>
+					</tr><?php } ?>
+
+					<?php if (isset($responseData['hits'])) { ?>
+						<tr><th width="70">Total&nbsp;hits:</th><td><?php echo $click($responseData['hits']['total']); ?></td></tr>
+						<tr><th width="70">Max&nbsp;hit&nbsp;score:</th><td><?php echo $click($responseData['hits']['max_score']); ?></td></tr>
+						<tr><th width="70">Results:</th><td><?php echo $click($responseData['hits']['hits'], TRUE, 15); ?></td></tr>
+					<?php } ?>
+
+				<?php } else { ?>
+					<tr>
+						<th width="70">Response:</th>
+						<td><?php echo $click($response->getData(), TRUE, 15); ?></td>
+					</tr>
 				<?php } ?>
-			</tr>
+
+			<?php } elseif (isset($query[3]) && $query[3] instanceof \Exception) { ?>
+				<tr>
+					<th width="70">Error:</th>
+					<td style="color:red"><?php echo $esc($query[3]->getMessage()); ?></td>
+				</tr>
+			<?php } ?>
+
 		</table>
 	<?php endforeach; ?>
 </div>

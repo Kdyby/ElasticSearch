@@ -60,6 +60,11 @@ class Panel extends Nette\Object implements IBarPanel
 	 */
 	public $queries = array();
 
+	/**
+	 * @var Kdyby\ElasticSearch\Client
+	 */
+	private $client;
+
 
 
 	/**
@@ -103,8 +108,16 @@ class Panel extends Nette\Object implements IBarPanel
 			}
 			: callback('\Tracy\Helpers::clickableDump');
 		$totalTime = $this->totalTime ? sprintf('%0.3f', $this->totalTime * 1000) . ' ms' : 'none';
-		$extractRequestData = function (Elastica\Request $request) {
-			$data = $request->getData();
+		$extractData = function ($object) {
+			if ($object instanceof Elastica\Request) {
+				$data = $object->getData();
+
+			} elseif ($object instanceof Elastica\Response) {
+				$data = $object->getData();
+
+			} else {
+				return array();
+			}
 
 			try {
 				return !is_array($data) ? Json::decode($data, Json::FORCE_ARRAY) : $data;
@@ -114,6 +127,41 @@ class Panel extends Nette\Object implements IBarPanel
 			}
 		};
 
+		$processedQueries = array();
+		$allQueries = $this->queries;
+		foreach ($allQueries as $authority => $requests) {
+			/** @var Elastica\Request[] $item */
+			foreach ($requests as $i => $item) {
+				$processedQueries[$authority][$i] = $item;
+
+				if (isset($item[3])) {
+					continue; // exception, do not re-execute
+				}
+
+				if (stripos($item[0]->getPath(), '_search') === FALSE) {
+					continue; // explain only search queries
+				}
+
+				if (!is_array($data = $extractData($item[0]))) {
+					continue;
+				}
+
+				try {
+					$response = $this->client->request(
+						$item[0]->getPath(),
+						$item[0]->getMethod(),
+						$item[0]->getData(),
+						array('explain' => 1) + $item[0]->getQuery()
+					);
+
+					// replace the search response with the explained response
+					$processedQueries[$authority][$i][1] = $response;
+
+				} catch (\Exception $e) {
+					// ignore
+				}
+			}
+		}
 
 		require __DIR__ . '/panel.phtml';
 
@@ -124,7 +172,7 @@ class Panel extends Nette\Object implements IBarPanel
 
 	public function success($client, Elastica\Request $request, Elastica\Response $response, $time)
 	{
-		$this->queries[$this->requestAuthority($response)][] = [$request, $response, $time];
+		$this->queries[$this->requestAuthority($response)][] = array($request, $response, $time);
 		$this->totalTime += $time;
 		$this->queriesCount++;
 	}
@@ -136,7 +184,7 @@ class Panel extends Nette\Object implements IBarPanel
 		/** @var Elastica\Response $response */
 		$response = method_exists($e, 'getResponse') ? $e->getResponse() : NULL;
 
-		$this->queries[$this->requestAuthority($response)][] = [$request, $response, $time, $e];
+		$this->queries[$this->requestAuthority($response)][] = array($request, $response, $time, $e);
 		$this->totalTime += $time;
 		$this->queriesCount++;
 	}
@@ -198,6 +246,7 @@ class Panel extends Nette\Object implements IBarPanel
 	 */
 	public function register(Kdyby\ElasticSearch\Client $client)
 	{
+		$this->client = $client;
 		$client->onSuccess[] = $this->success;
 		$client->onError[] = $this->failure;
 
