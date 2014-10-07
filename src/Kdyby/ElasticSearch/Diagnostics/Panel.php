@@ -138,7 +138,7 @@ class Panel extends Nette\Object implements IBarPanel
 					continue; // exception, do not re-execute
 				}
 
-				if (stripos($item[0]->getPath(), '_search') === FALSE) {
+				if (stripos($item[0]->getPath(), '_search') === FALSE || $item[0]->getMethod() !== 'GET') {
 					continue; // explain only search queries
 				}
 
