@@ -28,6 +28,14 @@ class Client extends Elastica\Client
 
 
 
+	/**
+	 * @param string $path
+	 * @param string $method
+	 * @param array $data
+	 * @param array $query
+	 * @throws \Exception
+	 * @return Elastica\Response
+	 */
 	public function request($path, $method = Request::GET, $data = array(), array $query = array())
 	{
 		$begin = microtime(TRUE);
