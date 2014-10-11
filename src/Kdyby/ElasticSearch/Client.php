@@ -14,8 +14,13 @@ use Elastica;
 use Elastica\Request;
 use Kdyby;
 use Nette;
+use Nette\Utils\ObjectMixin;
 
 
+
+if (!class_exists('Nette\Utils\ObjectMixin')) {
+	class_alias('Nette\ObjectMixin', 'Nette\Utils\ObjectMixin');
+}
 
 /**
  * @author Filip Procházka <filip@prochazka.su>
@@ -90,7 +95,7 @@ class Client extends Elastica\Client
 	 */
 	public function __call($name, $args)
 	{
-		return Nette\ObjectMixin::call($this, $name, $args);
+		return ObjectMixin::call($this, $name, $args);
 	}
 
 
@@ -106,7 +111,7 @@ class Client extends Elastica\Client
 	 */
 	public static function __callStatic($name, $args)
 	{
-		return Nette\ObjectMixin::callStatic(get_called_class(), $name, $args);
+		return ObjectMixin::callStatic(get_called_class(), $name, $args);
 	}
 
 
@@ -128,9 +133,9 @@ class Client extends Elastica\Client
 			list($class, $name) = explode('::', $name);
 		}
 		if ($callback === NULL) {
-			return Nette\ObjectMixin::getExtensionMethod($class, $name);
+			return ObjectMixin::getExtensionMethod($class, $name);
 		} else {
-			Nette\ObjectMixin::setExtensionMethod($class, $name, $callback);
+			ObjectMixin::setExtensionMethod($class, $name, $callback);
 		}
 	}
 
@@ -146,7 +151,7 @@ class Client extends Elastica\Client
 	 */
 	public function &__get($name)
 	{
-		return Nette\ObjectMixin::get($this, $name);
+		return ObjectMixin::get($this, $name);
 	}
 
 
@@ -162,7 +167,7 @@ class Client extends Elastica\Client
 	 */
 	public function __set($name, $value)
 	{
-		Nette\ObjectMixin::set($this, $name, $value);
+		ObjectMixin::set($this, $name, $value);
 	}
 
 
@@ -176,7 +181,7 @@ class Client extends Elastica\Client
 	 */
 	public function __isset($name)
 	{
-		return Nette\ObjectMixin::has($this, $name);
+		return ObjectMixin::has($this, $name);
 	}
 
 
@@ -191,7 +196,7 @@ class Client extends Elastica\Client
 	 */
 	public function __unset($name)
 	{
-		Nette\ObjectMixin::remove($this, $name);
+		ObjectMixin::remove($this, $name);
 	}
 
 }
