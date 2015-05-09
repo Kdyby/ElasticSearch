@@ -12,7 +12,6 @@ namespace Kdyby\ElasticSearch\DI;
 
 use Elastica;
 use Kdyby;
-use Kdyby\DoctrineCache\DI\Helpers as CacheHelpers;
 use Nette;
 use Nette\DI\Config;
 use Nette\PhpGenerator as Code;
