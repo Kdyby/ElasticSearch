@@ -118,4 +118,3 @@ class SearchExtension extends Nette\DI\CompilerExtension
 	}
 
 }
-
