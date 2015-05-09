@@ -22,7 +22,7 @@ Installation
 The best way to install Kdyby/ElasticSearch is using  [Composer](http://getcomposer.org/):
 
 ```sh
-$ composer require kdyby/elastic-search:@dev
+$ composer require kdyby/elastic-search
 ```
 
 
