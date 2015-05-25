@@ -29,6 +29,11 @@
 				<td><?php echo $click($requestData, TRUE, 15); ?></td>
 			</tr><?php } ?>
 
+			<tr>
+				<th width="70">Search type:</th>
+				<td><?php echo isset($request->getQuery()[\Elastica\Search::OPTION_SEARCH_TYPE]) ? $esc($request->getQuery()[\Elastica\Search::OPTION_SEARCH_TYPE]) : 'search' ?></td>
+			</tr>
+
 			<?php if ($response && $response->isOk()) { $responseData = $extractData($response); ?>
 				<?php if (stripos($request->getPath(), '_search') !== FALSE) { ?>
 					<?php if (isset($responseData['took'])) { ?><tr>
