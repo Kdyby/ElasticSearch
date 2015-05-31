@@ -59,7 +59,7 @@ class Panel extends Nette\Object implements IBarPanel
 	 */
 	public function getTab()
 	{
-		$img = Html::el('img', array('height' => '16px'))
+		$img = Html::el('img', array('height' => '14', 'width' => '14'))
 			->src('data:image/png;base64,' . base64_encode(file_get_contents(__DIR__ . '/logo.png')));
 		$tab = Html::el('span')->title('ElasticSearch')->add($img);
 		$title = Html::el()->setText('ElasticSearch');
