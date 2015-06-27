@@ -191,7 +191,11 @@ class Panel extends Nette\Object implements IBarPanel
 
 
 
-	public static function renderException(\Exception $e = NULL)
+	/**
+	 * @param \Exception|\Throwable $e
+	 * @return array|NULL
+	 */
+	public static function renderException($e = NULL)
 	{
 		if (!$e instanceof ExceptionInterface) {
 			return NULL;
