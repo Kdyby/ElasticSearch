@@ -58,6 +58,10 @@
 						<tr><th width="70">Results:</th><td><?php echo $click($responseData['hits']['hits'], TRUE, 15); ?></td></tr>
 					<?php } ?>
 
+					<?php if (isset($responseData['aggregations'])) { ?>
+						<tr><th width="70">Aggregations:</th><td><?php echo $click($responseData['aggregations'], TRUE, 15); ?></td></tr>
+					<?php } ?>
+
 				<?php } else { ?>
 					<tr>
 						<th width="70">Response:</th>
