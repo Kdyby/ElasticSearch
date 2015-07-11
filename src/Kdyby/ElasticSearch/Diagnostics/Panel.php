@@ -108,7 +108,13 @@ class Panel extends Nette\Object implements IBarPanel
 				return !is_array($data) ? Json::decode($data, Json::FORCE_ARRAY) : $data;
 
 			} catch (Nette\Utils\JsonException $e) {
-				return $data;
+				try {
+					return array_map(function($row) {
+						return Json::decode($row, Json::FORCE_ARRAY);
+					}, explode("\n", trim($data)));
+				} catch (Nette\Utils\JsonException $e) {
+					return $data;
+				}
 			}
 		};
 

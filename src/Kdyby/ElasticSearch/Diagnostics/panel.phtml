@@ -9,6 +9,8 @@
     #tracy-debug .nette-elasticSearchPanel code { font-size: 100%; font-weight: inherit; }
     #nette-debug .nette-elasticSearchPanel table,
     #tracy-debug .nette-elasticSearchPanel table { width: 100%; }
+    #nette-debug .nette-elasticSearchPanel table.multiRequest,
+    #tracy-debug .nette-elasticSearchPanel table.multiRequest { margin-top: 5px; }
     #nette-debug .nette-elasticSearchPanel table th,
     #tracy-debug .nette-elasticSearchPanel table th { text-align: right; }
 </style>
@@ -25,53 +27,73 @@
 
 		<table>
 			<?php if ($request->getData()) { $requestData = $extractData($request); ?><tr>
-				<th width="70"><a href="json:<?php echo $esc(\Nette\Utils\Json::encode($requestData)) ?>">Request:</th>
+				<th width="100"><a href="json:<?php echo $esc(\Nette\Utils\Json::encode($requestData)) ?>">Request:</th>
 				<td><?php echo $click($requestData, TRUE, 15); ?></td>
 			</tr><?php } ?>
 
 			<tr>
-				<th width="70">Search type:</th>
+				<th width="100">Search type:</th>
 				<td><?php echo isset($request->getQuery()[\Elastica\Search::OPTION_SEARCH_TYPE]) ? $esc($request->getQuery()[\Elastica\Search::OPTION_SEARCH_TYPE]) : 'search' ?></td>
 			</tr>
 
-			<?php if ($response && $response->isOk()) { $responseData = $extractData($response); ?>
-				<?php if (stripos($request->getPath(), '_search') !== FALSE) { ?>
-					<?php if (isset($responseData['took'])) { ?><tr>
-						<th width="70">Took:</th><td><?php echo $click($responseData['took']); ?></td>
-					</tr><?php } ?>
+			<?php if ($response && $response->isOk()) { $responsesData = $extractData($response); ?>
+				<?php $multiple = isset($responsesData['responses']); $responsesData = $multiple ? $responsesData['responses'] : array($responsesData); ?>
 
-					<?php if (isset($responseData['timed_out']) && $responseData['timed_out']) { ?><tr>
-						<th width="70">Timed&nbsp;out:</th><td>yes</td>
-					</tr><?php } ?>
+				<?php foreach ($responsesData as $index => $responseData) { ?>
 
-					<?php if (isset($responseData['_shards'])) { ?><tr>
-						<th width="70">Shards:</th><td>
-							total: <?php echo $esc($responseData['_shards']['total']); ?>,
-							successful: <?php echo $esc($responseData['_shards']['successful']); ?>,
-							failed: <?php echo $esc($responseData['_shards']['failed']); ?>
-						</td>
-					</tr><?php } ?>
-
-					<?php if (isset($responseData['hits'])) { ?>
-						<tr><th width="70">Total&nbsp;hits:</th><td><?php echo $click($responseData['hits']['total']); ?></td></tr>
-						<tr><th width="70">Max&nbsp;hit&nbsp;score:</th><td><?php echo $click($responseData['hits']['max_score']); ?></td></tr>
-						<tr><th width="70">Results:</th><td><?php echo $click($responseData['hits']['hits'], TRUE, 15); ?></td></tr>
+					<?php if ($multiple) { ?>
+						</table>
+						<table class="multiRequest">
 					<?php } ?>
 
-					<?php if (isset($responseData['aggregations'])) { ?>
-						<tr><th width="70">Aggregations:</th><td><?php echo $click($responseData['aggregations'], TRUE, 15); ?></td></tr>
+					<?php if (stripos($request->getPath(), '_search') !== FALSE || stripos($request->getPath(), '_msearch') !== FALSE) { ?>
+						<?php if (isset($responseData['took'])) { ?><tr>
+							<th width="100">Took:</th><td><?php echo $click($responseData['took']); ?></td>
+						</tr><?php } ?>
+
+						<?php if (isset($responseData['timed_out']) && $responseData['timed_out']) { ?><tr>
+							<th width="100">Timed&nbsp;out:</th><td>yes</td>
+						</tr><?php } ?>
+
+						<?php if (isset($responseData['_shards'])) { ?><tr>
+							<th width="100">Shards:</th><td>
+								total: <?php echo $esc($responseData['_shards']['total']); ?>,
+								successful: <?php echo $esc($responseData['_shards']['successful']); ?>,
+								failed: <?php echo $esc($responseData['_shards']['failed']); ?>
+							</td>
+						</tr><?php } ?>
+
+						<?php if (isset($responseData['hits'])) { ?>
+							<tr><th width="100">Total&nbsp;hits:</th><td><?php echo $click($responseData['hits']['total']); ?></td></tr>
+							<tr><th width="100">Max&nbsp;hit&nbsp;score:</th><td><?php echo $click($responseData['hits']['max_score']); ?></td></tr>
+							<tr><th width="100">Results:</th><td><?php echo $click($responseData['hits']['hits'], TRUE, 15); ?></td></tr>
+						<?php } ?>
+
+						<?php if (isset($responseData['aggregations'])) { ?>
+							<tr><th width="100">Aggregations:</th><td><?php echo $click($responseData['aggregations'], TRUE, 15); ?></td></tr>
+						<?php } ?>
+
+						<?php if (isset($responseData['error'])) { ?>
+						<tr>
+							<th width="100">Error:</th>
+							<td style="color:red"><?php echo $esc($responseData['error']); ?></td>
+						</tr>
+						<?php } ?>
+
+					<?php } else { ?>
+
+						<tr>
+							<th width="100">Response:</th>
+							<td><?php echo $click($response->getData(), TRUE, 15); ?></td>
+						</tr>
+
 					<?php } ?>
 
-				<?php } else { ?>
-					<tr>
-						<th width="70">Response:</th>
-						<td><?php echo $click($response->getData(), TRUE, 15); ?></td>
-					</tr>
 				<?php } ?>
 
 			<?php } elseif (isset($query[3]) && $query[3] instanceof \Exception) { ?>
 				<tr>
-					<th width="70">Error:</th>
+					<th width="100">Error:</th>
 					<td style="color:red"><?php echo $esc($query[3]->getMessage()); ?></td>
 				</tr>
 			<?php } ?>
