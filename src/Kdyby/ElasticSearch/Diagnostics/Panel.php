@@ -16,8 +16,6 @@ use Kdyby;
 use Nette;
 use Nette\Utils\Html;
 use Nette\Utils\Json;
-use Tracy\Bar;
-use Tracy\BlueScreen;
 use Tracy\Debugger;
 use Tracy\Dumper;
 use Tracy\IBarPanel;
@@ -245,17 +243,7 @@ class Panel extends Nette\Object implements IBarPanel
 		$client->onSuccess[] = $this->success;
 		$client->onError[] = $this->failure;
 
-		self::getDebuggerBar()->addPanel($this);
-	}
-
-
-
-	/**
-	 * @return Bar
-	 */
-	private static function getDebuggerBar()
-	{
-		return method_exists('Tracy\Debugger', 'getBar') ? Debugger::getBar() : Debugger::$bar;
+		Debugger::getBar()->addPanel($this);
 	}
 
 }
