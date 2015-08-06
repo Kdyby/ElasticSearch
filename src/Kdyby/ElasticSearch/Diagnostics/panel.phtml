@@ -28,7 +28,7 @@
 		<table>
 			<?php if ($request->getData()) { $requestData = $extractData($request); ?><tr>
 				<th width="100"><a href="json:<?php echo $esc(\Nette\Utils\Json::encode($requestData)) ?>">Request:</th>
-				<td><?php echo $click($requestData, TRUE, 15); ?></td>
+				<td><?php echo $click($requestData, TRUE, 25); ?></td>
 			</tr><?php } ?>
 
 			<tr>
@@ -66,11 +66,11 @@
 						<?php if (isset($responseData['hits'])) { ?>
 							<tr><th width="100">Total&nbsp;hits:</th><td><?php echo $click($responseData['hits']['total']); ?></td></tr>
 							<tr><th width="100">Max&nbsp;hit&nbsp;score:</th><td><?php echo $click($responseData['hits']['max_score']); ?></td></tr>
-							<tr><th width="100">Results:</th><td><?php echo $click($responseData['hits']['hits'], TRUE, 15); ?></td></tr>
+							<tr><th width="100">Results:</th><td><?php echo $click($responseData['hits']['hits'], TRUE, 25); ?></td></tr>
 						<?php } ?>
 
 						<?php if (isset($responseData['aggregations'])) { ?>
-							<tr><th width="100">Aggregations:</th><td><?php echo $click($responseData['aggregations'], TRUE, 15); ?></td></tr>
+							<tr><th width="100">Aggregations:</th><td><?php echo $click($responseData['aggregations'], TRUE, 25); ?></td></tr>
 						<?php } ?>
 
 						<?php if (isset($responseData['error'])) { ?>
@@ -84,7 +84,7 @@
 
 						<tr>
 							<th width="100">Response:</th>
-							<td><?php echo $click($response->getData(), TRUE, 15); ?></td>
+							<td><?php echo $click($response->getData(), TRUE, 25); ?></td>
 						</tr>
 
 					<?php } ?>
