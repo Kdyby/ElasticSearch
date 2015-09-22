@@ -73,6 +73,18 @@ class SearchExtension extends Nette\DI\CompilerExtension
 				$config['connections'][$name] = Config\Helpers::merge($connectionConfig, $builder->expand($this->connectionDefaults));
 			}
 		}
+		
+		// replace curl string options with their CURLOPT_ constant values
+		foreach ($config['connections'] as $name => $connectionConfig) {
+			$curlOptions = array();
+			foreach ($connectionConfig['config']['curl'] as $option => $value) {
+				if (!defined($constant = 'CURLOPT_' . strtoupper($option))) {
+					throw new Nette\InvalidArgumentException('There is no constant "' . $constant . '", therefore "' . $option . '" cannot be set.');
+				}
+				$curlOptions[constant($constant)] = $value;
+			}
+			$config['connections'][$name]['config']['curl'] = $curlOptions;
+		}
 
 		$elasticaConfig = array_intersect_key($config, $this->elasticaDefaults);
 		$elastica = $builder->addDefinition($this->prefix('elastica'))
