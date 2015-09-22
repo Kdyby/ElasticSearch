@@ -73,7 +73,7 @@ class SearchExtension extends Nette\DI\CompilerExtension
 				$config['connections'][$name] = Config\Helpers::merge($connectionConfig, $builder->expand($this->connectionDefaults));
 			}
 		}
-		
+
 		// replace curl string options with their CURLOPT_ constant values
 		foreach ($config['connections'] as $name => $connectionConfig) {
 			$curlOptions = array();
