@@ -14,6 +14,7 @@ use Elastica\Exception\ExceptionInterface;
 use Elastica;
 use Kdyby;
 use Nette;
+use Nette\Utils\Callback;
 use Nette\Utils\Html;
 use Nette\Utils\Json;
 use Tracy\Debugger;
@@ -84,12 +85,14 @@ class Panel extends Nette\Object implements IBarPanel
 		}
 
 		ob_start();
-		$esc = callback('Nette\Templating\Helpers::escapeHtml');
+		$esc = class_exists('\Nette\Templating\Helpers')
+			? Callback::closure( 'Nette\Templating\Helpers::escapeHtml')
+			: Callback::closure( '\Latte\Runtime\Filters::escapeHtml');
 		$click = class_exists('\Tracy\Dumper')
 			? function ($o, $c = FALSE, $d = 4) {
 				return \Tracy\Dumper::toHtml($o, array('collapse' => $c, 'depth' => $d));
 			}
-			: callback('\Tracy\Helpers::clickableDump');
+			: Callback::closure('\Tracy\Helpers::clickableDump');
 		$totalTime = $this->totalTime ? sprintf('%0.3f', $this->totalTime * 1000) . ' ms' : 'none';
 		$extractData = function ($object) {
 			if ($object instanceof Elastica\Request) {
