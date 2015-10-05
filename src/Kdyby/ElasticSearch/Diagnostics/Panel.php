@@ -83,14 +83,16 @@ class Panel extends Nette\Object implements IBarPanel
 			return NULL;
 		}
 
-		ob_start();
-		$esc = callback('Nette\Templating\Helpers::escapeHtml');
-		$click = class_exists('\Tracy\Dumper')
+		$esc = function ($s) {
+			return htmlSpecialChars($s, ENT_QUOTES, 'UTF-8');
+		};
+		$click = class_exists('Tracy\Dumper')
 			? function ($o, $c = FALSE, $d = 4) {
 				return \Tracy\Dumper::toHtml($o, array('collapse' => $c, 'depth' => $d));
 			}
-			: callback('\Tracy\Helpers::clickableDump');
+			: Nette\Utils\Callback::closure('Tracy\Helpers::clickableDump');
 		$totalTime = $this->totalTime ? sprintf('%0.3f', $this->totalTime * 1000) . ' ms' : 'none';
+
 		$extractData = function ($object) {
 			if ($object instanceof Elastica\Request) {
 				$data = $object->getData();
@@ -151,6 +153,8 @@ class Panel extends Nette\Object implements IBarPanel
 				}
 			}
 		}
+
+		ob_start();
 
 		require __DIR__ . '/panel.phtml';
 
