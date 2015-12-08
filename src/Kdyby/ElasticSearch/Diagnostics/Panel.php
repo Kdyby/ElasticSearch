@@ -88,7 +88,7 @@ class Panel extends Nette\Object implements IBarPanel
 		};
 		$click = class_exists('Tracy\Dumper')
 			? function ($o, $c = FALSE, $d = 4) {
-				return \Tracy\Dumper::toHtml($o, array('collapse' => $c, 'depth' => $d));
+				return Dumper::toHtml($o, array(Dumper::COLLAPSE => $c, Dumper::DEPTH => $d, Dumper::TRUNCATE => 2000));
 			}
 			: Nette\Utils\Callback::closure('Tracy\Helpers::clickableDump');
 		$totalTime = $this->totalTime ? sprintf('%0.3f', $this->totalTime * 1000) . ' ms' : 'none';
@@ -102,6 +102,11 @@ class Panel extends Nette\Object implements IBarPanel
 
 			} else {
 				return array();
+			}
+
+			if ($object instanceof Elastica\Request) {
+				$j = new Elastica\JSONFormat('  ', "\n"); // indent and linebreak characters
+				return $j->format((string)$object, TRUE);
 			}
 
 			try {
