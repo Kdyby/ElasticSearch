@@ -106,7 +106,7 @@ class Panel extends Nette\Object implements IBarPanel
 
 			if ($object instanceof Elastica\Request) {
 				$j = new Elastica\JSONFormat('  ', "\n"); // indent and linebreak characters
-				return $j->format((string)$object, TRUE);
+				return [$j->format((string)$object, TRUE)];
 			}
 
 			try {
