@@ -255,35 +255,42 @@ class Panel extends Nette\Object implements IBarPanel
 		Debugger::getBar()->addPanel($this);
 	}
 
+	/**
+	 * syntax highlighting for rendering Elastica\Request
+	 * @param string $json
+	 * @return string
+	 */
 	public static function jsonSyntaxHighlight($json)
 	{
 		$text = str_replace([
-			'&',
-			'<',
-			'>',
+				'&',
+				'<',
+				'>',
 			], [
-			'&amp;',
-			'&lt;',
-			'&gt;',
-			], $json);
+				'&amp;',
+				'&lt;',
+				'&gt;',
+			], $json
+		);
 
 		return preg_replace_callback('/("([a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/', function ($matchs) {
 			$match = $matchs[0];
 
 			$cls = 'number';
-			if(preg_match('/^"/', $match)) {
-				if(preg_match('/:$/', $match)) {
+			if (preg_match('/^"/', $match)) {
+				if (preg_match('/:$/', $match)) {
 					$cls = 'key';
 				} else {
 					$cls = 'string';
 				}
 			}
-			elseif(preg_match('/true|false/', $match)) {
+			elseif (preg_match('/true|false/', $match)) {
 				$cls = 'bool';
 			}
-			elseif(preg_match('/null/', $match)) {
+			elseif (preg_match('/null/', $match)) {
 				$cls = 'null';
 			}
+
 			return '<span class="tracy-dump-' . $cls . '">' . $match . '</span>';
 		}, $text);
 	}
