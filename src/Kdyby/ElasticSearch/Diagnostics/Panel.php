@@ -105,8 +105,8 @@ class Panel extends Nette\Object implements IBarPanel
 			}
 
 			if ($object instanceof Elastica\Request) {
-				$j = new Elastica\JSONFormat('  ', "\n"); // indent and linebreak characters
-				return [$j->format((string)$object, TRUE)];
+				$json = Json::decode((string) $object);
+				return $json->data;
 			}
 
 			try {
@@ -253,6 +253,39 @@ class Panel extends Nette\Object implements IBarPanel
 		$client->onError[] = $this->failure;
 
 		Debugger::getBar()->addPanel($this);
+	}
+
+	public static function jsonSyntaxHighlight($json)
+	{
+		$text = str_replace([
+			'&',
+			'<',
+			'>',
+			], [
+			'&amp;',
+			'&lt;',
+			'&gt;',
+			], $json);
+
+		return preg_replace_callback('/("([a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/', function ($matchs) {
+			$match = $matchs[0];
+
+			$cls = 'number';
+			if(preg_match('/^"/', $match)) {
+				if(preg_match('/:$/', $match)) {
+					$cls = 'key';
+				} else {
+					$cls = 'string';
+				}
+			}
+			elseif(preg_match('/true|false/', $match)) {
+				$cls = 'bool';
+			}
+			elseif(preg_match('/null/', $match)) {
+				$cls = 'null';
+			}
+			return '<span class="tracy-dump-' . $cls . '">' . $match . '</span>';
+		}, $text);
 	}
 
 }
