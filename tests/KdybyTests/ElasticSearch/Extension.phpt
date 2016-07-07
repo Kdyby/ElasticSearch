@@ -33,7 +33,7 @@ class ExtensionTest extends Tester\TestCase
 	{
 		$config = new Nette\Configurator();
 		$config->setTempDirectory(TEMP_DIR);
-		$config->addParameters(array('container' => array('class' => 'SystemContainer_' . md5($configFile))));
+		$config->addParameters(['container' => ['class' => 'SystemContainer_' . md5($configFile)]]);
 		Kdyby\ElasticSearch\DI\SearchExtension::register($config);
 		$config->addConfig(__DIR__ . '/config/' . $configFile . '.neon');
 		return $config->createContainer();

@@ -24,8 +24,8 @@ use Nette\Utils\ObjectMixin;
 class Client extends Elastica\Client
 {
 
-	public $onSuccess = array();
-	public $onError = array();
+	public $onSuccess = [];
+	public $onError = [];
 
 
 
@@ -37,7 +37,7 @@ class Client extends Elastica\Client
 	 * @throws \Exception
 	 * @return Elastica\Response
 	 */
-	public function request($path, $method = Request::GET, $data = array(), array $query = array())
+	public function request($path, $method = Request::GET, $data = [], array $query = [])
 	{
 		$begin = microtime(TRUE);
 

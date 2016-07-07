@@ -41,7 +41,7 @@ class Panel extends Nette\Object implements IBarPanel
 	/**
 	 * @var array
 	 */
-	public $queries = array();
+	public $queries = [];
 
 	/**
 	 * @var Kdyby\ElasticSearch\Client
@@ -57,7 +57,7 @@ class Panel extends Nette\Object implements IBarPanel
 	 */
 	public function getTab()
 	{
-		$img = Html::el('img', array('height' => '14', 'width' => '14'))
+		$img = Html::el('img', ['height' => '14', 'width' => '14'])
 			->src('data:image/png;base64,' . base64_encode(file_get_contents(__DIR__ . '/logo.png')));
 		$tab = Html::el('span')->title('ElasticSearch')->add($img);
 		$title = Html::el()->setText('ElasticSearch');
@@ -88,7 +88,7 @@ class Panel extends Nette\Object implements IBarPanel
 		};
 		$click = class_exists('Tracy\Dumper')
 			? function ($o, $c = FALSE, $d = 4) {
-				return \Tracy\Dumper::toHtml($o, array('collapse' => $c, 'depth' => $d));
+				return \Tracy\Dumper::toHtml($o, ['collapse' => $c, 'depth' => $d]);
 			}
 			: Nette\Utils\Callback::closure('Tracy\Helpers::clickableDump');
 		$totalTime = $this->totalTime ? sprintf('%0.3f', $this->totalTime * 1000) . ' ms' : 'none';
@@ -101,7 +101,7 @@ class Panel extends Nette\Object implements IBarPanel
 				$data = $object->getData();
 
 			} else {
-				return array();
+				return [];
 			}
 
 			try {
@@ -118,7 +118,7 @@ class Panel extends Nette\Object implements IBarPanel
 			}
 		};
 
-		$processedQueries = array();
+		$processedQueries = [];
 		$allQueries = $this->queries;
 		foreach ($allQueries as $authority => $requests) {
 			/** @var Elastica\Request[] $item */
@@ -142,7 +142,7 @@ class Panel extends Nette\Object implements IBarPanel
 						$item[0]->getPath(),
 						$item[0]->getMethod(),
 						$item[0]->getData(),
-						array('explain' => 1) + $item[0]->getQuery()
+						['explain' => 1] + $item[0]->getQuery()
 					);
 
 					// replace the search response with the explained response
@@ -165,7 +165,7 @@ class Panel extends Nette\Object implements IBarPanel
 
 	public function success($client, Elastica\Request $request, Elastica\Response $response, $time)
 	{
-		$this->queries[$this->requestAuthority($response)][] = array($request, $response, $time);
+		$this->queries[$this->requestAuthority($response)][] = [$request, $response, $time];
 		$this->totalTime += $time;
 		$this->queriesCount++;
 	}
@@ -177,7 +177,7 @@ class Panel extends Nette\Object implements IBarPanel
 		/** @var Elastica\Response $response */
 		$response = method_exists($e, 'getResponse') ? $e->getResponse() : NULL;
 
-		$this->queries[$this->requestAuthority($response)][] = array($request, $response, $time, $e);
+		$this->queries[$this->requestAuthority($response)][] = [$request, $response, $time, $e];
 		$this->totalTime += $time;
 		$this->queriesCount++;
 	}
@@ -230,10 +230,10 @@ class Panel extends Nette\Object implements IBarPanel
 				. '</span></pre>';
 		} */
 
-		return $panel ? array(
+		return $panel ? [
 			'tab' => 'ElasticSearch',
 			'panel' => $panel
-		) : NULL;
+		] : NULL;
 	}
 
 
