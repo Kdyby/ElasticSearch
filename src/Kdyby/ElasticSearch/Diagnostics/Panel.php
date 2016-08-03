@@ -57,10 +57,9 @@ class Panel extends Nette\Object implements IBarPanel
 	 */
 	public function getTab()
 	{
-		$img = Html::el('img', ['height' => '14', 'width' => '14'])
-			->src('data:image/png;base64,' . base64_encode(file_get_contents(__DIR__ . '/logo.png')));
+		$img = Html::el('')->addHtml(file_get_contents(__DIR__ . '/logo.svg'));
 		$tab = Html::el('span')->title('ElasticSearch')->addHtml($img);
-		$title = Html::el()->setText('ElasticSearch');
+		$title = Html::el('span')->class('tracy-label');
 
 		if ($this->queriesCount) {
 			$title->setText(
@@ -69,7 +68,7 @@ class Panel extends Nette\Object implements IBarPanel
 			);
 		}
 
-		return (string) $tab->addText($title);
+		return (string) $tab->addHtml($title);
 	}
 
 
