@@ -51,6 +51,8 @@ class SearchExtension extends Nette\DI\CompilerExtension
 		'transport' => Elastica\Connection::DEFAULT_TRANSPORT,
 		'persistent' => TRUE,
 		'timeout' => Elastica\Connection::TIMEOUT,
+		'username' => NULL,
+		'password' => NULL,
 		'config' => [
 			'curl' => [], # curl options
 			'headers' => [], # additional curl headers
