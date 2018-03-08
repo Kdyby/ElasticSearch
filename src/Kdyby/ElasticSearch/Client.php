@@ -34,15 +34,16 @@ class Client extends Elastica\Client
 	 * @param string $method
 	 * @param array $data
 	 * @param array $query
+     * @param string $contentType
 	 * @throws \Exception
 	 * @return Elastica\Response
 	 */
-	public function request($path, $method = Request::GET, $data = [], array $query = [])
+	public function request($path, $method = Request::GET, $data = [], array $query = [], $contentType = Request::DEFAULT_CONTENT_TYPE)
 	{
 		$begin = microtime(TRUE);
 
 		try {
-			$response = parent::request($path, $method, $data, $query);
+			$response = parent::request($path, $method, $data, $query, $contentType);
 			$this->onSuccess($this, $this->_lastRequest, $response, microtime(TRUE) - $begin);
 
 			return $response;
