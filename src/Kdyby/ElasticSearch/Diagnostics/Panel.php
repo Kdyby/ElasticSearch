@@ -244,8 +244,8 @@ class Panel implements IBarPanel
 	public function register(Kdyby\ElasticSearch\Client $client)
 	{
 		$this->client = $client;
-		$client->onSuccess[] = $this->success;
-		$client->onError[] = $this->failure;
+		$client->onSuccess[] = [$this, 'success'];
+		$client->onError[] = [$this, 'failure'];
 
 		Debugger::getBar()->addPanel($this);
 	}
