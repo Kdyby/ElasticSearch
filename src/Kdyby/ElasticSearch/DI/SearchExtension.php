@@ -64,9 +64,10 @@ class SearchExtension extends Nette\DI\CompilerExtension
 
 	public function loadConfiguration()
 	{
-		$this->setConfig($this->defaults + $this->elasticaDefaults);
+		/** @var array $config */
+		$config = \Nette\DI\Config\Helpers::merge(parent::getConfig(), $this->defaults + $this->elasticaDefaults);
+		$this->setConfig($config);
 		$builder = $this->getContainerBuilder();
-		$config = $this->getConfig();
 
 		if (empty($config['connections'])) {
 			$config['connections']['default'] = Config\Helpers::merge(array_intersect_key($config, $this->connectionDefaults), Nette\DI\Helpers::expand($this->connectionDefaults, $builder->parameters));
@@ -101,23 +102,12 @@ class SearchExtension extends Nette\DI\CompilerExtension
 		}
 	}
 
-
-
 	public function afterCompile(Nette\PhpGenerator\ClassType $class)
 	{
 		$initialize = $class->methods['initialize'];
 
 		$debuggerClass = class_exists('Tracy\Debugger') ? 'Tracy\Debugger' : 'Nette\Diagnostics\Debugger';
 		$initialize->addBody('?::getBlueScreen()->addPanel(?);', [new Code\PhpLiteral($debuggerClass), 'Kdyby\\ElasticSearch\\Diagnostics\\Panel::renderException']);
-	}
-
-
-
-	public static function register(Nette\Configurator $configurator)
-	{
-		$configurator->onCompile[] = function ($config, Nette\DI\Compiler $compiler) {
-			$compiler->addExtension('search', new SearchExtension());
-		};
 	}
 
 }

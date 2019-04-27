@@ -17,6 +17,7 @@
 		"issues": "https://github.com/Kdyby/ElasticSearch/issues"
 	},
 	"require": {
+		"php": ">=7.1",
 		"nette/di": "~3.0",
 		"tracy/tracy": "~2.6",
 		"nette/utils": "~3.0",
