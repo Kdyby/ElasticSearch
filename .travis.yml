@@ -15,29 +15,25 @@ env:
     - NETTE=nette-3.0
 
 matrix:
+  fast_finish: true
   include:
-    - php: 7.1
-      env: NETTE=nette-3.0 COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
-    - php: 7.2
-      env: NETTE=nette-3.0 COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
     - php: 7.3
-      env: NETTE=nette-3.0 COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
+      env: COMPOSER_EXTRA_ARGS="--prefer-stable" COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
+    - php: 7.3
+      env: COMPOSER_EXTRA_ARGS="--prefer-stable" PHPSTAN=1 RUN_TESTS=0
+    - php: 7.3
+      env: COMPOSER_EXTRA_ARGS="--prefer-stable" CODING_STANDARD=1 RUN_TESTS=0
+  exclude:
+    - php: 7.3
+      env: COMPOSER_EXTRA_ARGS="--prefer-stable"
   allow_failures:
-    - php: 7.1
-      env: NETTE=nette-3.0 COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
-    - php: 7.2
-      env: NETTE=nette-3.0 COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
-    - php: 7.3
-      env: NETTE=nette-3.0 COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
+    - env: RUN_TESTS=1
+
 before_install:
   - travis_retry composer self-update
-  - wget -O /tmp/composer-nette https://raw.githubusercontent.com/Kdyby/TesterExtras/master/bin/composer-nette.php
-  - php /tmp/composer-nette
 
 install:
-  - travis_retry composer update --no-interaction --prefer-dist $COMPOSER_EXTRA_ARGS
-  - travis_retry composer create-project --no-interaction jakub-onderka/php-parallel-lint /tmp/php-parallel-lint
-  - travis_retry wget -O /tmp/coveralls.phar https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar
+  - travis_retry composer update --no-interaction --no-suggest --no-progress --prefer-dist $COMPOSER_EXTRA_ARGS # update because we may need --prefer-lowest option
 
 script:
   - vendor/bin/tester $COVERAGE -s -p ${TESTER_RUNTIME:-php} -c ./tests/php.ini-unix ./tests/KdybyTests/
