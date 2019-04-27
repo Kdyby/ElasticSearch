@@ -10,9 +10,11 @@ php:
   - 7.1
   - 7.2
   - 7.3
+
 env:
-  matrix:
-    - NETTE=nette-3.0
+  - RUN_TESTS=1 # dev
+  - RUN_TESTS=1 COMPOSER_EXTRA_ARGS="--prefer-stable"
+  - RUN_TESTS=1 COMPOSER_EXTRA_ARGS="--prefer-lowest --prefer-stable"
 
 matrix:
   fast_finish: true
@@ -37,7 +39,6 @@ install:
 
 script:
   - vendor/bin/tester $COVERAGE -s -p ${TESTER_RUNTIME:-php} -c ./tests/php.ini-unix ./tests/KdybyTests/
-  - php /tmp/php-parallel-lint/parallel-lint.php -e php,phpt --exclude vendor .
 
 after_script:
   - if [ "$COVERAGE" != "" ]; then php /tmp/coveralls.phar --verbose --config tests/.coveralls.yml || true; fi
