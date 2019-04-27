@@ -64,15 +64,17 @@ class SearchExtension extends Nette\DI\CompilerExtension
 
 	public function loadConfiguration()
 	{
+		/** @var array $config */
+		$config = \Nette\DI\Config\Helpers::merge($this->getConfig(), $this->defaults + $this->elasticaDefaults);
+		$this->setConfig($config);
 		$builder = $this->getContainerBuilder();
-		$config = $this->getConfig($this->defaults + $this->elasticaDefaults);
 
 		if (empty($config['connections'])) {
-			$config['connections']['default'] = Config\Helpers::merge(array_intersect_key($config, $this->connectionDefaults), $builder->expand($this->connectionDefaults));
+			$config['connections']['default'] = Config\Helpers::merge(array_intersect_key($config, $this->connectionDefaults), Nette\DI\Helpers::expand($this->connectionDefaults, $builder->parameters));
 
 		} else {
 			foreach ($config['connections'] as $name => $connectionConfig) {
-				$config['connections'][$name] = Config\Helpers::merge($connectionConfig, $builder->expand($this->connectionDefaults));
+				$config['connections'][$name] = Config\Helpers::merge($connectionConfig, Nette\DI\Helpers::expand($this->connectionDefaults, $builder->parameters));
 			}
 		}
 
@@ -90,17 +92,15 @@ class SearchExtension extends Nette\DI\CompilerExtension
 
 		$elasticaConfig = array_intersect_key($config, $this->elasticaDefaults);
 		$elastica = $builder->addDefinition($this->prefix('elastica'))
-			->setClass('Kdyby\ElasticSearch\Client', [$elasticaConfig]);
+			->setFactory(Kdyby\ElasticSearch\Client::class, [$elasticaConfig]);
 
 		if ($config['debugger']) {
 			$builder->addDefinition($this->prefix('panel'))
-				->setClass('Kdyby\ElasticSearch\Diagnostics\Panel');
+				->setFactory(Kdyby\ElasticSearch\Diagnostics\Panel::class);
 
 			$elastica->addSetup($this->prefix('@panel') . '::register', ['@self']);
 		}
 	}
-
-
 
 	public function afterCompile(Nette\PhpGenerator\ClassType $class)
 	{
@@ -108,15 +108,6 @@ class SearchExtension extends Nette\DI\CompilerExtension
 
 		$debuggerClass = class_exists('Tracy\Debugger') ? 'Tracy\Debugger' : 'Nette\Diagnostics\Debugger';
 		$initialize->addBody('?::getBlueScreen()->addPanel(?);', [new Code\PhpLiteral($debuggerClass), 'Kdyby\\ElasticSearch\\Diagnostics\\Panel::renderException']);
-	}
-
-
-
-	public static function register(Nette\Configurator $configurator)
-	{
-		$configurator->onCompile[] = function ($config, Nette\DI\Compiler $compiler) {
-			$compiler->addExtension('search', new SearchExtension());
-		};
 	}
 
 }
