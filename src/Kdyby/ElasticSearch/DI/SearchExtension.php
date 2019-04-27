@@ -64,8 +64,9 @@ class SearchExtension extends Nette\DI\CompilerExtension
 
 	public function loadConfiguration()
 	{
+		$this->setConfig($this->defaults + $this->elasticaDefaults);
 		$builder = $this->getContainerBuilder();
-		$config = $this->getConfig($this->defaults + $this->elasticaDefaults);
+		$config = $this->getConfig();
 
 		if (empty($config['connections'])) {
 			$config['connections']['default'] = Config\Helpers::merge(array_intersect_key($config, $this->connectionDefaults), Nette\DI\Helpers::expand($this->connectionDefaults, $builder->parameters));
