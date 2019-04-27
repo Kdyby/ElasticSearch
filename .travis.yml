@@ -21,10 +21,6 @@ matrix:
   include:
     - php: 7.3
       env: COMPOSER_EXTRA_ARGS="--prefer-stable" COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
-    - php: 7.3
-      env: COMPOSER_EXTRA_ARGS="--prefer-stable" PHPSTAN=1 RUN_TESTS=0
-    - php: 7.3
-      env: COMPOSER_EXTRA_ARGS="--prefer-stable" CODING_STANDARD=1 RUN_TESTS=0
   exclude:
     - php: 7.3
       env: COMPOSER_EXTRA_ARGS="--prefer-stable"
