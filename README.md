@@ -11,7 +11,7 @@ Kdyby/ElasticSearch
 Requirements
 ------------
 
-Kdyby/ElasticSearch requires PHP 5.3.2 or higher.
+Kdyby/ElasticSearch requires PHP 7.1 or higher, and supports both nette 2.4 and 3.0
 
 - [Nette Framework](https://github.com/nette/nette)
 - [Elastica](https://github.com/ruflin/Elastica)
