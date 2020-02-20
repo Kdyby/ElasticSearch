@@ -28,7 +28,12 @@
 		<table>
 			<?php if ($request->getData()) { $requestData = $extractData($request); ?><tr>
 				<th width="100"><a href="json:<?php echo $esc(\Nette\Utils\Json::encode($requestData)) ?>">Request:</th>
-				<td><?php echo $click($requestData, TRUE, 25); ?></td>
+				<td><pre class="tracy-dump"><span class="tracy-toggle tracy-collapsed"><!--
+				--><span class="tracy-dump-array">json</span> (<?php echo strlen(\Nette\Utils\Json::encode($requestData)); ?>)</span><!--
+				--><div class="tracy-collapsed"><!--
+				--><?php echo \Kdyby\ElasticSearch\Diagnostics\Panel::jsonSyntaxHighlight(\Nette\Utils\Json::encode($requestData, \Nette\Utils\Json::PRETTY)); ?>
+					</div></span></pre>
+				</td>
 			</tr><?php } ?>
 
 			<tr>
