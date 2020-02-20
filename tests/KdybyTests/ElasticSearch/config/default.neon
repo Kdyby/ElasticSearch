@@ -1,2 +1,2 @@
 elasticSearch:
-	debugger: on
+	debugger: true
