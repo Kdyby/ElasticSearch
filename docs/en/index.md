@@ -61,3 +61,8 @@ class SearchManager
 	// ...
 
 ```
+
+## Usage with monolog
+
+Extension is working with monolog as well, just use
+ - Monolog\Handler\ElasticaHandler
