@@ -33,13 +33,13 @@ elasticSearch:
 	path: NULL
 	proxy: NULL
 	transport: 'Http'
-	persistent: on
+	persistent: yes
 	timeout: 300
 	config:
 		curl: [] # curl options
 		headers: [] # additional curl headers
 		url: [] # completely custom URL endpoint
-	roundRobin: off
+	roundRobin: no
 	retryOnConflict: 0
 ```
 
