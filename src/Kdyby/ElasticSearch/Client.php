@@ -12,6 +12,7 @@ namespace Kdyby\ElasticSearch;
 
 use Elastica;
 use Elastica\Request;
+use Elastica\Response;
 use Kdyby;
 use Nette;
 use Nette\Utils\ObjectMixin;
@@ -36,10 +37,10 @@ class Client extends Elastica\Client
 	 * @param array $data
 	 * @param array $query
 	 * @param string $contentType
-	 * @return Elastica\Response
+	 * @return Response
 	 * @throws \Exception
 	 */
-	public function request($path, $method = Request::GET, $data = [], array $query = [], $contentType = Request::DEFAULT_CONTENT_TYPE)
+    public function request(string $path, string $method = Request::GET, $data = [], array $query = [], string $contentType = Request::DEFAULT_CONTENT_TYPE): Response
 	{
 		$begin = microtime(TRUE);
 
@@ -55,14 +56,4 @@ class Client extends Elastica\Client
 		}
 	}
 
-
-
-	protected function _log($context)
-	{
-		if ($context instanceof Request) {
-			$this->_lastRequest = $context;
-		}
-
-		parent::_log($context);
-	}
 }
