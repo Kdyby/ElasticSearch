@@ -22,7 +22,7 @@ require_once __DIR__ . '/../bootstrap.php';
 /**
  * @author Filip Procházka <filip@prochazka.su>
  */
-class ExtensionTest extends Tester\TestCase
+class SearchExtensionTest extends Tester\TestCase
 {
 
 	public function createContainer(string $configFile = 'default'): Nette\DI\Container
@@ -48,4 +48,4 @@ class ExtensionTest extends Tester\TestCase
 
 }
 
-(new ExtensionTest())->run();
+(new SearchExtensionTest())->run();

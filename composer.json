@@ -41,8 +41,7 @@
 		"nette/security": "~3.0",
 		"nette/tokenizer": "~3.0",
 		"latte/latte": "~2.5",
-
-		"nette/tester": "~2.2"
+		"nette/tester": "^2.3.4"
 	},
 	"autoload": {
 		"psr-0": {

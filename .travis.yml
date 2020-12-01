@@ -7,8 +7,11 @@ cache:
         - $HOME/.composer/cache
 
 php:
+  - 7.1
   - 7.2
   - 7.3
+  - 7.4
+  - 8.0
 
 env:
   - RUN_TESTS=1 # dev
@@ -18,10 +21,10 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 7.3
+    - php: 7.4
       env: COMPOSER_EXTRA_ARGS="--prefer-stable" COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
   exclude:
-    - php: 7.3
+    - php: 7.4
       env: COMPOSER_EXTRA_ARGS="--prefer-stable"
   allow_failures:
     - env: RUN_TESTS=1
