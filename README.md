@@ -1,7 +1,7 @@
 Kdyby/ElasticSearch
 ======
 
-[![Build Status](https://travis-ci.org/Kdyby/ElasticSearch.svg?branch=master)](https://travis-ci.org/Kdyby/ElasticSearch)
+![build](https://github.com/Kdyby/ElasticSearch/workflows/build/badge.svg)
 [![Downloads this Month](https://img.shields.io/packagist/dm/kdyby/elastic-search.svg)](https://packagist.org/packages/kdyby/elastic-search)
 [![Latest stable](https://img.shields.io/packagist/v/kdyby/elastic-search.svg)](https://packagist.org/packages/kdyby/elastic-search)
 [![Coverage Status](https://coveralls.io/repos/github/Kdyby/ElasticSearch/badge.svg?branch=master)](https://coveralls.io/github/Kdyby/ElasticSearch?branch=master)
