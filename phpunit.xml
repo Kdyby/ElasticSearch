@@ -1,0 +1,12 @@
+<phpunit bootstrap="tests/KdybyTests/bootstrap.php" colors="true">
+	<testsuites>
+		<testsuite name="all">
+			<directory>tests</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+		<whitelist processUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">src</directory>
+		</whitelist>
+	</filter>
+</phpunit>

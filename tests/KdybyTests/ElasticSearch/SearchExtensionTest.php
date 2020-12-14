@@ -1,28 +1,15 @@
 <?php
 
-/**
- * Test: Kdyby\ElasticSearch\Extension.
- *
- * @testCase Kdyby\ElasticSearch\ExtensionTest
- * @author Filip Procházka <filip@prochazka.su>
- * @package Kdyby\ElasticSearch
- */
-
 namespace KdybyTests\ElasticSearch;
 
 use Kdyby;
 use Nette;
-use Tester;
-use Tester\Assert;
+use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '/../bootstrap.php';
 
 
-
-/**
- * @author Filip Procházka <filip@prochazka.su>
- */
-class SearchExtensionTest extends Tester\TestCase
+class SearchExtensionTest extends TestCase
 {
 
 	public function createContainer(string $configFile = 'default'): Nette\DI\Container
@@ -41,9 +28,9 @@ class SearchExtensionTest extends Tester\TestCase
 	{
 		$sl = $this->createContainer();
 
-		Assert::type(Kdyby\ElasticSearch\Client::class, $sl->getService('elasticSearch.elastica'));
-		Assert::type(\Elastica\Client::class, $sl->getService('elasticSearch.elastica'));
-		Assert::type(Kdyby\ElasticSearch\Diagnostics\Panel::class, $sl->getService('elasticSearch.panel'));
+		$this->assertInstanceOf(Kdyby\ElasticSearch\Client::class, $sl->getService('elasticSearch.elastica'));
+		$this->assertInstanceOf(\Elastica\Client::class, $sl->getService('elasticSearch.elastica'));
+		$this->assertInstanceOf(Kdyby\ElasticSearch\Diagnostics\Panel::class, $sl->getService('elasticSearch.panel'));
 	}
 
 }

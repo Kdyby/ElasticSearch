@@ -22,7 +22,7 @@ matrix:
   fast_finish: true
   include:
     - php: 7.4
-      env: COMPOSER_EXTRA_ARGS="--prefer-stable" COVERAGE="--coverage ./coverage.xml --coverage-src ./src" TESTER_RUNTIME="phpdbg"
+      env: COMPOSER_EXTRA_ARGS="--prefer-stable" COVERAGE="1"
   exclude:
     - php: 7.4
       env: COMPOSER_EXTRA_ARGS="--prefer-stable"
@@ -36,7 +36,7 @@ install:
   - travis_retry composer update --no-interaction --no-suggest --no-progress --prefer-dist $COMPOSER_EXTRA_ARGS # update because we may need --prefer-lowest option
 
 script:
-  - vendor/bin/tester $COVERAGE -s -p ${TESTER_RUNTIME:-php} -c ./tests/php.ini-unix ./tests/KdybyTests/
+  - vendor/bin/phpunit --coverage-clover=coverage.xml
 
 after_script:
   - if [ "$COVERAGE" != "" ]; then php /tmp/coveralls.phar --verbose --config tests/.coveralls.yml || true; fi

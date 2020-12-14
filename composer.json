@@ -41,7 +41,7 @@
 		"nette/security": "~3.0",
 		"nette/tokenizer": "~3.0",
 		"latte/latte": "~2.5",
-		"nette/tester": "^2.3.4"
+		"phpunit/phpunit": "^7.0|8.0|^9.0"
 	},
 	"autoload": {
 		"psr-0": {
